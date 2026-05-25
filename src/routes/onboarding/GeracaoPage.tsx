@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RefreshCw, LayoutDashboard } from 'lucide-react';
 
-
 import api from '../../lib/api';
 import { Stepper } from '../../components/forms/Stepper';
 import { Button } from '../../components/ui/Button';
@@ -51,7 +50,6 @@ export const GeracaoPage: React.FC = () => {
     }
   }, [navigate, addToast]);
 
-  // Efeito para rotacionar as mensagens de status
   React.useEffect(() => {
     if (!isGenerating) return;
 
@@ -62,7 +60,6 @@ export const GeracaoPage: React.FC = () => {
     return () => clearInterval(interval);
   }, [isGenerating]);
 
-  // Dispara a geração assim que a tela monta
   React.useEffect(() => {
     dispararGeracaoPlano();
   }, [dispararGeracaoPlano]);

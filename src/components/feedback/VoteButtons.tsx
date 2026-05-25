@@ -1,14 +1,15 @@
 import React from 'react';
+import type { FeedbackTipo, VotoUsuario } from '../../lib/feedback';
 import { ThumbsUp, ThumbsDown } from 'lucide-react';
 import api from '../../lib/api';
 import { useToastStore } from '../../stores/toastStore';
 import styles from './VoteButtons.module.css';
 
 interface VoteButtonsProps {
-  tipo: 'exercicio' | 'refeicao';
+  tipo: FeedbackTipo;
   itemNome: string;
-  initialVoted?: 'up' | 'down' | null;
-  onVoteChange?: (voted: 'up' | 'down' | null) => void;
+  initialVoted?: VotoUsuario;
+  onVoteChange?: (voted: VotoUsuario) => void;
   showLabel?: boolean;
 }
 
@@ -19,7 +20,7 @@ export const VoteButtons: React.FC<VoteButtonsProps> = ({
   onVoteChange,
   showLabel = false
 }) => {
-  const [voted, setVoted] = React.useState<'up' | 'down' | null>(initialVoted);
+  const [voted, setVoted] = React.useState<VotoUsuario>(initialVoted);
   const [loading, setLoading] = React.useState(false);
   const addToast = useToastStore(state => state.addToast);
 
@@ -31,10 +32,6 @@ export const VoteButtons: React.FC<VoteButtonsProps> = ({
   const handleVote = async (action: 'up' | 'down') => {
     if (loading) return;
 
-    const token = sessionStorage.getItem('accessToken') || localStorage.getItem('accessToken');
-    if (!token) return;
-
-    // Se clicar no botão já selecionado, remove o feedback (ou para simplificar, apenas inverte)
     const gostou = action === 'up';
     const isUndoing = voted === action;
     const targetVoted = isUndoing ? null : action;
@@ -45,16 +42,13 @@ export const VoteButtons: React.FC<VoteButtonsProps> = ({
     setLoading(true);
 
     try {
-      let success = false;
       if (isUndoing) {
         await api.delete(`/feedback/me/all?tipo=${tipo}&item_nome=${encodeURIComponent(itemNome)}`);
       } else {
-        // Envia upsert do voto (gostou = true/false) para o endpoint POST /feedback/{tipo}
         await api.post(`/feedback/${tipo}`, {
           item_nome: itemNome,
           gostou: gostou
         });
-        success = true;
       }
     } catch (err) {
       setVoted(voted);

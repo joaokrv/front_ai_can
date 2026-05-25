@@ -11,6 +11,8 @@ import {
 
 
 import api from '../../lib/api';
+import { parsePlanoIdFromItemNome } from '../../lib/feedback';
+import type { FeedbackItem } from '../../lib/feedback';
 import { useToastStore } from '../../stores/toastStore';
 import { StatCard } from '../../components/plano/StatCard';
 import { TagChip } from '../../components/ui/TagChip';
@@ -19,13 +21,6 @@ import { Button } from '../../components/ui/Button';
 import { Skeleton } from '../../components/ui/Skeleton';
 import { Modal } from '../../components/ui/Modal';
 import styles from './AfinidadePage.module.css';
-
-interface FeedbackItem {
-  id: number;
-  tipo: 'exercicio' | 'refeicao';
-  item_nome: string;
-  gostou: boolean;
-}
 
 interface FeedbackStats {
   taxa_satisfacao: number;
@@ -127,12 +122,12 @@ export const AfinidadePage: React.FC = () => {
           <div className={styles.tagsWrapper}>
             {curtidos.length > 0 ? (
               curtidos.map(item => {
-                const m = item.item_nome.match(/- Plano (\d+)$/);
+                const planoId = parsePlanoIdFromItemNome(item.item_nome);
                 return (
                   <TagChip
                     key={item.id}
                     onRemove={() => handleRemoveFeedback(item.id)}
-                    onClick={m ? () => navigate(`/plano/${m[1]}`) : undefined}
+                    onClick={planoId !== null ? () => navigate(`/plano/${planoId}`) : undefined}
                   >
                     {item.item_nome}
                   </TagChip>
@@ -154,12 +149,12 @@ export const AfinidadePage: React.FC = () => {
           <div className={styles.tagsWrapper}>
             {rejeitados.length > 0 ? (
               rejeitados.map(item => {
-                const m = item.item_nome.match(/- Plano (\d+)$/);
+                const planoId = parsePlanoIdFromItemNome(item.item_nome);
                 return (
                   <TagChip
                     key={item.id}
                     onRemove={() => handleRemoveFeedback(item.id)}
-                    onClick={m ? () => navigate(`/plano/${m[1]}`) : undefined}
+                    onClick={planoId !== null ? () => navigate(`/plano/${planoId}`) : undefined}
                   >
                     {item.item_nome}
                   </TagChip>

@@ -8,8 +8,9 @@ import {
   ArrowRight 
 } from 'lucide-react';
 
-
 import api from '../../lib/api';
+import { buildTreinoItemNome } from '../../lib/feedback';
+import type { FeedbackItem, VotoUsuario } from '../../lib/feedback';
 import { useToastStore } from '../../stores/toastStore';
 import { TrainingCard } from '../../components/plano/TrainingCard';
 import { MealCard } from '../../components/plano/MealCard';
@@ -30,10 +31,9 @@ interface UserInfo {
   const [isLoading, setIsLoading] = React.useState(true);
   const [isRegenerating, setIsRegenerating] = React.useState(false);
   const [totalPlanos, setTotalPlanos] = React.useState(0);
-  const [feedbackTreinoAtual, setFeedbackTreinoAtual] = React.useState<'up' | 'down' | null>(null);
+  const [feedbackTreinoAtual, setFeedbackTreinoAtual] = React.useState<VotoUsuario>(null);
 
-  // Obtém o nome do dia atual em português, minúsculo
-  const getDiaSemanaAtual = () => {
+const getDiaSemanaAtual = () => {
     const dias = ['domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'];
     return dias[new Date().getDay()];
   };
@@ -55,12 +55,10 @@ interface UserInfo {
       const ativo = planosList.itens?.find((p: any) => p.status === 'ativo');
 
       if (ativo) {
-        // Busca detalhes completos do plano ativo
-        const planoDetalhado = await api.get<any>(`/planos/${ativo.id}`);
+      const planoDetalhado = await api.get<any>(`/planos/${ativo.id}`);
         setPlanoAtivo(planoDetalhado);
 
-        // Identifica se tem treino programado para hoje
-        const diaSemanaHoje = getDiaSemanaAtual();
+      const diaSemanaHoje = getDiaSemanaAtual();
         const treinoHoje = planoDetalhado.dias?.find(
           (d: any) => d.identificacao.toLowerCase() === diaSemanaHoje
         );
@@ -72,12 +70,11 @@ interface UserInfo {
           setDiaTreinoHoje(planoDetalhado.dias?.[0] || null);
         }
 
-        // Busca feedback existente do usuário para o treino atual
-        const focoMuscular = treinoHoje?.foco_muscular || planoDetalhado.dias?.[0]?.foco_muscular;
+      const focoMuscular = treinoHoje?.foco_muscular || planoDetalhado.dias?.[0]?.foco_muscular;
         if (focoMuscular) {
-          const itemNome = `Treino ${focoMuscular} - Plano ${ativo.id}`;
-          const fbList = await api.get<{ itens: Array<{ item_nome: string; gostou: boolean }> }>('/feedback/me?tipo=exercicio&limit=100');
-          const existing = fbList.itens?.find((f: any) => f.item_nome === itemNome);
+          const itemNome = buildTreinoItemNome(focoMuscular, ativo.id);
+          const fbList = await api.get<{ itens: FeedbackItem[] }>(`/feedback/me?tipo=exercicio&item_nome=${encodeURIComponent(itemNome)}&limit=1`);
+          const existing = fbList.itens?.[0];
           if (existing) {
             setFeedbackTreinoAtual(existing.gostou ? 'up' : 'down');
           } else {
@@ -99,8 +96,7 @@ interface UserInfo {
     carregarDadosDashboard();
   }, [carregarDadosDashboard]);
 
-  // Função para regenerar o plano ativo
-  const handleRegenerarPlano = async () => {
+const handleRegenerarPlano = async () => {
     setIsRegenerating(true);
     addToast('Gerando novo plano com nossa IA...', 'info', 5000);
     try {
@@ -140,7 +136,7 @@ interface UserInfo {
       <div className={styles.hero}>
         <span className={styles.date}>{getDiaSemanaExtenso()}</span>
         <h1 className={styles.heroTitle}>
-          Bora, {user?.nome.split(' ')[0]}.{' '}
+          Bora, {user?.nome?.split(' ')?.[0] ?? 'Usuário'}.{' '}
           {planoAtivo ? (
             diaSemanaHojeEhDeTreino ? (
               <>É dia de <span className={styles.heroTitleAccent}>{diaTreinoHoje?.foco_muscular}</span>.</>

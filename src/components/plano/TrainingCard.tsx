@@ -1,4 +1,6 @@
 import React from 'react';
+import { buildTreinoItemNome } from '../../lib/feedback';
+import type { VotoUsuario } from '../../lib/feedback';
 import { useNavigate } from 'react-router-dom';
 import { Dumbbell, Clock, BrainCircuit, ArrowRight, RefreshCw } from 'lucide-react';
 import { Badge } from '../ui/Badge';
@@ -15,7 +17,7 @@ interface TrainingCardProps {
   nivelExperiencia: string;
   onRegenerar?: () => void;
   isRegenerating?: boolean;
-  initialVoted?: 'up' | 'down' | null;
+  initialVoted?: VotoUsuario;
 }
 
 export const TrainingCard: React.FC<TrainingCardProps> = ({
@@ -27,12 +29,11 @@ export const TrainingCard: React.FC<TrainingCardProps> = ({
   nivelExperiencia,
   onRegenerar,
   isRegenerating = false,
-  initialVoted = null
+  initialVoted = null as VotoUsuario
 }) => {
   const navigate = useNavigate();
 
-  // Tradução simples do nível de experiência
-  const translateNivel = (level: string) => {
+const translateNivel = (level: string) => {
     switch (level.toLowerCase()) {
       case 'iniciante': return 'Iniciante';
       case 'intermediario': return 'Intermediário';
@@ -77,7 +78,7 @@ export const TrainingCard: React.FC<TrainingCardProps> = ({
 
       {/* Seção inferior de Ações e Votação */}
       <div className={styles.actionsArea}>
-        <VoteButtons tipo="exercicio" itemNome={`Treino ${focoMuscular} - Plano ${planoId}`} showLabel initialVoted={initialVoted} />
+        <VoteButtons tipo="exercicio" itemNome={buildTreinoItemNome(focoMuscular ?? '', planoId)} showLabel initialVoted={initialVoted} />
 
         <div className={styles.actionsBtns}>
           {onRegenerar && (
