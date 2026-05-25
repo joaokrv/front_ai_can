@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Search, ChevronLeft, ChevronRight, Apple } from 'lucide-react';
 
@@ -43,6 +43,7 @@ export const RefeicoesPage: React.FC = () => {
   
   const [data, setData] = React.useState<PaginatedCat | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [userFeedbacks, setUserFeedbacks] = React.useState<Record<string, 'up' | 'down'>>({});
 
   // Efeito de Debounce no input de texto
   React.useEffect(() => {
@@ -72,6 +73,12 @@ export const RefeicoesPage: React.FC = () => {
 
       const res = await api.get<PaginatedCat>(url);
       setData(res);
+      const fbList = await api.get<{ itens: any[] }>('/feedback/me?limit=150');
+      const fbMap: Record<string, 'up' | 'down'> = {};
+      fbList.itens?.forEach(item => {
+        fbMap[item.item_nome] = item.gostou ? 'up' : 'down';
+      });
+      setUserFeedbacks(fbMap);
     } catch (err) {
       addToast('Erro ao carregar refeições. Tente novamente.', 'error');
     } finally {
@@ -193,7 +200,12 @@ export const RefeicoesPage: React.FC = () => {
                       ) : (
                         <span style={{ fontSize: '0.6875rem', color: 'var(--text-muted)' }}>Feedback IA</span>
                       )}
-                      <VoteButtons tipo="refeicao" itemNome={ref.nome} />
+                       <VoteButtons
+                          tipo="refeicao"
+                          itemNome={ref.nome}
+                          initialVoted={userFeedbacks[ref.nome] || null}
+                          onVoteChange={(val) => setUserFeedbacks(prev => ({ ...prev, [ref.nome]: val }))}
+                        />
                     </div>
                   </div>
                 </div>

@@ -26,6 +26,7 @@ export const PlanoDetalhePage: React.FC = () => {
   const [isExporting, setIsExporting] = React.useState(false);
   const [isRegenerating, setIsRegenerating] = React.useState(false);
   const [isTreinoFinalizado, setIsTreinoFinalizado] = React.useState(false);
+  const [userFeedbacks, setUserFeedbacks] = React.useState<Record<string, 'up' | 'down'>>({});
 
   // Monitora se o treino de hoje já foi concluído para persistência
   React.useEffect(() => {
@@ -57,6 +58,13 @@ export const PlanoDetalhePage: React.FC = () => {
     try {
       const data = await api.get<any>(`/planos/${id}`);
       setPlano(data);
+
+      const fbList = await api.get<{ itens: any[] }>(`/feedback/me?limit=150`);
+      const fbMap: Record<string, 'up' | 'down'> = {};
+      fbList.itens?.forEach(item => {
+        fbMap[item.item_nome] = item.gostou ? 'up' : 'down';
+      });
+      setUserFeedbacks(fbMap);
     } catch (err) {
       addToast('Erro ao carregar os detalhes do plano.', 'error');
       // Em caso de erro (ex: 403 Forbidden), volta ao dashboard
@@ -180,6 +188,8 @@ export const PlanoDetalhePage: React.FC = () => {
                       repeticoes={ex.repeticoes}
                       descanso={ex.descanso_segundos}
                       videoUrl={ex.video_url}
+                      initialVoted={userFeedbacks[ex.nome] || null}
+                      onVoteChange={(val) => setUserFeedbacks(prev => ({ ...prev, [ex.nome]: val }))}
                     />
                   ))}
                 </div>
@@ -211,6 +221,8 @@ export const PlanoDetalhePage: React.FC = () => {
                   carboidrato={meal.carboidrato_g}
                   gordura={meal.gordura_g}
                   linkReceita={meal.link_receita}
+                  initialVoted={userFeedbacks[meal.nome] || null}
+                  onVoteChange={(val) => setUserFeedbacks(prev => ({ ...prev, [meal.nome]: val }))}
                 />
               ))}
             </div>
@@ -240,6 +252,8 @@ export const PlanoDetalhePage: React.FC = () => {
                     repeticoes={ex.repeticoes}
                     descanso={ex.descanso_segundos}
                     videoUrl={ex.video_url}
+                    initialVoted={userFeedbacks[ex.nome] || null}
+                    onVoteChange={(val) => setUserFeedbacks(prev => ({ ...prev, [ex.nome]: val }))}
                   />
                 ))}
               </div>
@@ -268,6 +282,8 @@ export const PlanoDetalhePage: React.FC = () => {
                 carboidrato={meal.carboidrato_g}
                 gordura={meal.gordura_g}
                 linkReceita={meal.link_receita}
+                initialVoted={userFeedbacks[meal.nome] || null}
+                onVoteChange={(val) => setUserFeedbacks(prev => ({ ...prev, [meal.nome]: val }))}
               />
             ))}
           </div>

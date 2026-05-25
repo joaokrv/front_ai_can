@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Search, ChevronLeft, ChevronRight, Dumbbell, Sparkles, Play } from 'lucide-react';
 
@@ -59,6 +59,24 @@ export const ExerciciosPage: React.FC = () => {
   const [planoAtivo, setPlanoAtivo] = React.useState<any>(null);
   const [diaTreinoHoje, setDiaTreinoHoje] = React.useState<any>(null);
   const [loadingPlano, setLoadingPlano] = React.useState(true);
+  const [userFeedbacks, setUserFeedbacks] = React.useState<Record<string, 'up' | 'down'>>({});
+
+  const carregarFeedbacks = React.useCallback(async () => {
+    try {
+      const fbList = await api.get<{ itens: any[] }>('/feedback/me?limit=150');
+      const fbMap: Record<string, 'up' | 'down'> = {};
+      fbList.itens?.forEach(item => {
+        fbMap[item.item_nome] = item.gostou ? 'up' : 'down';
+      });
+      setUserFeedbacks(fbMap);
+    } catch (err) {
+      console.error('Erro ao carregar feedbacks:', err);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    carregarFeedbacks();
+  }, [carregarFeedbacks]);
 
 
   const normalizarDia = (str: string) =>
@@ -190,6 +208,8 @@ export const ExerciciosPage: React.FC = () => {
                       repeticoes={ex.repeticoes}
                       descanso={ex.descanso_segundos}
                       videoUrl={ex.video_url}
+                      initialVoted={userFeedbacks[ex.nome] || null}
+                      onVoteChange={(val) => setUserFeedbacks(prev => ({ ...prev, [ex.nome]: val }))}
                     />
                   ))}
                 </div>
@@ -229,6 +249,8 @@ export const ExerciciosPage: React.FC = () => {
                             repeticoes={ex.repeticoes}
                             descanso={ex.descanso_segundos}
                             videoUrl={ex.video_url}
+                            initialVoted={userFeedbacks[ex.nome] || null}
+                            onVoteChange={(val) => setUserFeedbacks(prev => ({ ...prev, [ex.nome]: val }))}
                           />
                         ))}
                       </div>
@@ -325,7 +347,12 @@ export const ExerciciosPage: React.FC = () => {
 
                     <div className={styles.cardFooter}>
                       <span style={{ fontSize: '0.6875rem', color: 'var(--text-muted)' }}>Feedback IA</span>
-                      <VoteButtons tipo="exercicio" itemNome={ex.nome} />
+                      <VoteButtons
+                        tipo="exercicio"
+                        itemNome={ex.nome}
+                        initialVoted={userFeedbacks[ex.nome] || null}
+                        onVoteChange={(val) => setUserFeedbacks(prev => ({ ...prev, [ex.nome]: val }))}
+                      />
                     </div>
                   </div>
                 ))}

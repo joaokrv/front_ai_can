@@ -32,6 +32,7 @@ interface UserInfo {
   const [isRegenerating, setIsRegenerating] = React.useState(false);
   const [totalPlanos, setTotalPlanos] = React.useState(0);
   const [feedbackTreinoAtual, setFeedbackTreinoAtual] = React.useState<VotoUsuario>(null);
+  const [userFeedbacks, setUserFeedbacks] = React.useState<Record<string, 'up' | 'down'>>({});
 
 const getDiaSemanaAtual = () => {
     const dias = ['domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'];
@@ -85,6 +86,14 @@ const getDiaSemanaAtual = () => {
         setPlanoAtivo(null);
         setDiaTreinoHoje(null);
       }
+
+      // Carrega feedbacks do usuário para refeições e exercícios
+      const fbList = await api.get<{ itens: FeedbackItem[] }>('/feedback/me?limit=150');
+      const fbMap: Record<string, 'up' | 'down'> = {};
+      fbList.itens?.forEach(item => {
+        fbMap[item.item_nome] = item.gostou ? 'up' : 'down';
+      });
+      setUserFeedbacks(fbMap);
     } catch (err) {
       addToast('Erro ao carregar dados do dashboard.', 'error');
     } finally {
@@ -216,6 +225,8 @@ const handleRegenerarPlano = async () => {
                           carboidrato={meal.carboidrato_g}
                           gordura={meal.gordura_g}
                           linkReceita={meal.link_receita}
+                          initialVoted={userFeedbacks[meal.nome] || null}
+                          onVoteChange={(val) => setUserFeedbacks(prev => ({ ...prev, [meal.nome]: val }))}
                         />
                       ))}
                     {planoAtivo.sugestoes_nutricionais.filter((meal: any) => meal.tipo === 'pre_treino').length === 0 && (
@@ -239,6 +250,8 @@ const handleRegenerarPlano = async () => {
                           carboidrato={meal.carboidrato_g}
                           gordura={meal.gordura_g}
                           linkReceita={meal.link_receita}
+                          initialVoted={userFeedbacks[meal.nome] || null}
+                          onVoteChange={(val) => setUserFeedbacks(prev => ({ ...prev, [meal.nome]: val }))}
                         />
                       ))}
                     {planoAtivo.sugestoes_nutricionais.filter((meal: any) => meal.tipo === 'pos_treino').length === 0 && (

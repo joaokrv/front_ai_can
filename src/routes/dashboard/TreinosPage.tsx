@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ClipboardList, Sparkles, RefreshCw, FileDown } from 'lucide-react';
 
@@ -20,6 +20,7 @@ export const TreinosPage: React.FC = () => {
   const [loadingPlano, setLoadingPlano] = React.useState(true);
   const [isRegenerating, setIsRegenerating] = React.useState(false);
   const [isExporting, setIsExporting] = React.useState(false);
+  const [userFeedbacks, setUserFeedbacks] = React.useState<Record<string, 'up' | 'down'>>({});
 
   const handleExportPDF = async () => {
     if (!planoAtivo) return;
@@ -57,6 +58,14 @@ export const TreinosPage: React.FC = () => {
       } else {
         setPlanoAtivo(null);
       }
+
+      // Carrega feedbacks do usuário para refeições e exercícios
+      const fbList = await api.get<{ itens: any[] }>('/feedback/me?limit=150');
+      const fbMap: Record<string, 'up' | 'down'> = {};
+      fbList.itens?.forEach(item => {
+        fbMap[item.item_nome] = item.gostou ? 'up' : 'down';
+      });
+      setUserFeedbacks(fbMap);
     } catch (err) {
       addToast('Erro ao carregar dados. Tente novamente.', 'error');
     } finally {
@@ -140,6 +149,8 @@ export const TreinosPage: React.FC = () => {
                       repeticoes={ex.repeticoes}
                       descanso={ex.descanso_segundos}
                       videoUrl={ex.video_url}
+                      initialVoted={userFeedbacks[ex.nome] || null}
+                      onVoteChange={(val) => setUserFeedbacks(prev => ({ ...prev, [ex.nome]: val }))}
                     />
                   ))}
                 </div>
@@ -171,6 +182,8 @@ export const TreinosPage: React.FC = () => {
                   carboidrato={meal.carboidrato_g}
                   gordura={meal.gordura_g}
                   linkReceita={meal.link_receita}
+                  initialVoted={userFeedbacks[meal.nome] || null}
+                  onVoteChange={(val) => setUserFeedbacks(prev => ({ ...prev, [meal.nome]: val }))}
                 />
               ))}
             </div>
@@ -200,6 +213,8 @@ export const TreinosPage: React.FC = () => {
                     repeticoes={ex.repeticoes}
                     descanso={ex.descanso_segundos}
                     videoUrl={ex.video_url}
+                    initialVoted={userFeedbacks[ex.nome] || null}
+                    onVoteChange={(val) => setUserFeedbacks(prev => ({ ...prev, [ex.nome]: val }))}
                   />
                 ))}
               </div>
@@ -228,6 +243,8 @@ export const TreinosPage: React.FC = () => {
                 carboidrato={meal.carboidrato_g}
                 gordura={meal.gordura_g}
                 linkReceita={meal.link_receita}
+                initialVoted={userFeedbacks[meal.nome] || null}
+                onVoteChange={(val) => setUserFeedbacks(prev => ({ ...prev, [meal.nome]: val }))}
               />
             ))}
           </div>
