@@ -1,0 +1,45 @@
+.container {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+.mainWrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+  position: relative;
+}
+
+/* Área de Rolagem do Conteúdo */
+.contentArea {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Responsividade: Ajustes para tablets e celulares */
+@media (max-width: 1024px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .mainWrapper {
+    height: calc(100vh - 60px); /* Descontando espaço para header colapsado se houver */
+  }
+
+  .contentArea {
+    padding: 1.25rem;
+    gap: 1.25rem;
+  }
+}

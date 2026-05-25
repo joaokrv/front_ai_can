@@ -1,0 +1,47 @@
+﻿# Dependencias e build
+node_modules/
+dist/
+dist-ssr/
+build/
+
+# Env e segredos
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+.env.*.local
+*.pem
+*.key
+*.crt
+*.p12
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Arquivos de sessao e geracao de Claude
+CLAUDE.md
+.agents/
+SECURITY-AUDIT-*.md
+
+# Prototipos e assets de design
+prototipo/
+
+# TypeScript build info
+*.tsbuildinfo
+
+# IDE e SO
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+.DS_Store
+Thumbs.db

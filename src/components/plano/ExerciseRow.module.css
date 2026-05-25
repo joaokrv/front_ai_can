@@ -1,0 +1,123 @@
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1.25rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  gap: 1rem;
+  transition: all var(--transition-fast);
+}
+
+.row:hover {
+  border-color: var(--border-hover);
+  background-color: rgba(255, 255, 255, 0.01);
+}
+
+.leftArea {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 2;
+  min-width: 0; /* Permite truncar texto longo */
+}
+
+.orderBadge {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-default);
+  color: var(--accent-primary);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.nameInfo {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.name {
+  font-size: 0.875rem; /* 14px */
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.metaGrid {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex: 3;
+  justify-content: flex-end;
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.metaLabel {
+  font-size: 0.625rem; /* 10px */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.metaValue {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem; /* 13px */
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+/* Responsividade Mobile: Colapsar dados em grid pequeno */
+@media (max-width: 768px) {
+  .row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .leftArea {
+    width: 100%;
+  }
+
+  .metaGrid {
+    width: 100%;
+    justify-content: space-between;
+    background-color: var(--bg-tertiary);
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-default);
+  }
+
+  .metaItem {
+    align-items: center;
+  }
+
+  .actions {
+    justify-content: flex-end;
+    width: 100%;
+  }
+}

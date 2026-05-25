@@ -1,0 +1,110 @@
+.container {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 380px;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  padding: 0.875rem 1rem;
+  border-radius: 10px;
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(8px);
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.message {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.125rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  margin-top: 0.125rem;
+}
+
+.closeBtn:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-tertiary);
+}
+
+/* Tipos de Toasts com variações de borda de acordo com a paleta do sistema */
+.success {
+  border-color: rgba(212, 255, 0, 0.3);
+  box-shadow: 0 0 20px rgba(212, 255, 0, 0.03), var(--shadow-lg);
+}
+
+.error {
+  border-color: rgba(255, 68, 68, 0.3);
+  box-shadow: 0 0 20px rgba(255, 68, 68, 0.03), var(--shadow-lg);
+}
+
+.warning {
+  border-color: rgba(255, 158, 0, 0.3);
+}
+
+.info {
+  border-color: rgba(0, 229, 204, 0.3);
+}
+
+/* Cores de ícones */
+.iconSuccess {
+  color: var(--accent-primary);
+  flex-shrink: 0;
+}
+
+.iconError {
+  color: var(--feedback-negative);
+  flex-shrink: 0;
+}
+
+.iconWarning {
+  color: #FF9E00;
+  flex-shrink: 0;
+}
+
+.iconInfo {
+  color: var(--accent-secondary);
+  flex-shrink: 0;
+}
+
+/* Responsividade: centralizado no mobile */
+@media (max-width: 480px) {
+  .container {
+    top: 1rem;
+    right: 1rem;
+    left: 1rem;
+    max-width: calc(100% - 2rem);
+  }
+}

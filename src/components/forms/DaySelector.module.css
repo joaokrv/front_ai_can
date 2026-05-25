@@ -1,0 +1,62 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.label {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.75rem; /* 12px */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.daysGrid {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.dayBtn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.8125rem; /* 13px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.dayBtn:hover:not(.readonly) {
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+}
+
+/* Dia Ativo (Selecionado) */
+.activeDay {
+  background-color: var(--accent-primary-muted);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  box-shadow: var(--glow-lime);
+}
+
+.activeDay:hover:not(.readonly) {
+  background-color: var(--accent-primary-hover);
+  color: var(--text-on-accent);
+}
+
+/* Modo Readonly (Somente Leitura) */
+.readonly {
+  cursor: default;
+}
