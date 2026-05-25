@@ -59,7 +59,7 @@ export const ExerciciosPage: React.FC = () => {
   const [planoAtivo, setPlanoAtivo] = React.useState<any>(null);
   const [diaTreinoHoje, setDiaTreinoHoje] = React.useState<any>(null);
   const [loadingPlano, setLoadingPlano] = React.useState(true);
-  const [userFeedbacks, setUserFeedbacks] = React.useState<Record<string, 'up' | 'down'>>({});
+  const [userFeedbacks, setUserFeedbacks] = React.useState<Record<string, 'up' | 'down' | null>>({});
 
   const carregarFeedbacks = React.useCallback(async () => {
     try {

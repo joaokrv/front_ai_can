@@ -32,7 +32,7 @@ interface UserInfo {
   const [isRegenerating, setIsRegenerating] = React.useState(false);
   const [totalPlanos, setTotalPlanos] = React.useState(0);
   const [feedbackTreinoAtual, setFeedbackTreinoAtual] = React.useState<VotoUsuario>(null);
-  const [userFeedbacks, setUserFeedbacks] = React.useState<Record<string, 'up' | 'down'>>({});
+  const [userFeedbacks, setUserFeedbacks] = React.useState<Record<string, 'up' | 'down' | null>>({});
 
 const getDiaSemanaAtual = () => {
     const dias = ['domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'];

@@ -43,7 +43,7 @@ export const RefeicoesPage: React.FC = () => {
   
   const [data, setData] = React.useState<PaginatedCat | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [userFeedbacks, setUserFeedbacks] = React.useState<Record<string, 'up' | 'down'>>({});
+  const [userFeedbacks, setUserFeedbacks] = React.useState<Record<string, 'up' | 'down' | null>>({});
 
   // Efeito de Debounce no input de texto
   React.useEffect(() => {

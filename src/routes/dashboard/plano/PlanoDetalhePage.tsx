@@ -26,7 +26,7 @@ export const PlanoDetalhePage: React.FC = () => {
   const [isExporting, setIsExporting] = React.useState(false);
   const [isRegenerating, setIsRegenerating] = React.useState(false);
   const [isTreinoFinalizado, setIsTreinoFinalizado] = React.useState(false);
-  const [userFeedbacks, setUserFeedbacks] = React.useState<Record<string, 'up' | 'down'>>({});
+  const [userFeedbacks, setUserFeedbacks] = React.useState<Record<string, 'up' | 'down' | null>>({});
 
   // Monitora se o treino de hoje já foi concluído para persistência
   React.useEffect(() => {

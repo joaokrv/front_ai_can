@@ -20,7 +20,7 @@ export const TreinosPage: React.FC = () => {
   const [loadingPlano, setLoadingPlano] = React.useState(true);
   const [isRegenerating, setIsRegenerating] = React.useState(false);
   const [isExporting, setIsExporting] = React.useState(false);
-  const [userFeedbacks, setUserFeedbacks] = React.useState<Record<string, 'up' | 'down'>>({});
+  const [userFeedbacks, setUserFeedbacks] = React.useState<Record<string, 'up' | 'down' | null>>({});
 
   const handleExportPDF = async () => {
     if (!planoAtivo) return;
